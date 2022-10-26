@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-sm-4" *ngIf="ver">
+    <div class="row">
+      <div class="mt-auto">
+        <app-title [title]="'Usuário: ' + userSelect.name"></app-title>
+      </div>
+
+    </div>
+
+    <form [formGroup]="peopleForm" (submit)="peopleSubmit()">
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">Nome</label>
+        <input type="text" class="form-control" formControlName="name" />
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Email</label>
+        <input type="text" class="form-control" formControlName="email" />
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput3" class="form-label">Endereço</label>
+        <input type="text" class="form-control" formControlName="street" />
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput3" class="form-label">Telefone</label>
+        <input type="text" class="form-control" formControlName="phone" />
+      </div>
+      <div class="form-group">
+        <hr />
+        <button class="btn btn-sm btn-success" [disabled]="!peopleForm.valid">enviar</button>
+
+          <button class="btn btn-sm btn-danger" (click)="voltar()">
+            fechar
+          </button>
+
+      </div>
+    </form>
+  </div>
+
+  <div [ngClass]="{ 'col-sm-8': ver, 'col-sm-12': !ver }">
+    <app-title [title]="title"></app-title>
+    <table class="table  table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Visualizar</th>
+          <th scope="col">#</th>
+          <th scope="col">Nome</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Endereço</th>
+          <th scope="col">Telefone</th>
+          <th scope="col">Opções</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td > <button  (click)="userSelected(user)" class=" text-dark btn btn-sm btn-outline-warning">Detalhe</button></td>
+          <td scope="row">{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.street }}</td>
+          <td>{{ user.phone }}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-danger">Excluir</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div *ngIf="teamSelect">
+  <div class="row">
+    <div class="mt-auto">
+      <app-title [title]="'Seleção: ' + teamSelect"></app-title>
+    </div>
+    <div class="mt-1">
+      <button class="btn btn-warning" (click)="voltar()">voltar</button>
+    </div>
+  </div>
+  <form>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Nome</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<div *ngIf="!teamSelect">
+  <app-title [title]="title"></app-title>
+  <table class="table table-success table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nome</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let team of teams"
+        style="cursor: pointer"
+        (click)="teamSelected(team)"
+      >
+        <th scope="row">{{ team.id }}</th>
+        <td>{{ team.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

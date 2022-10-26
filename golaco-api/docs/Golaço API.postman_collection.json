@@ -1,0 +1,1284 @@
+{
+	"info": {
+		"_postman_id": "c363b181-e225-4f60-880d-9d83ab930e71",
+		"name": "Golaço API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21083398"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Request token admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"golaco@golaco.bet\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request token user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"maria@dominio.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "People",
+			"item": [
+				{
+					"name": "Create person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Joana de Souza\",\r\n    \"personType\": \"F\",\r\n    \"cpfCnpj\": \"55555555555\",\r\n    \"email\": \"joana@dominio.com\",\r\n    \"phone\": \"16988882536\",\r\n    \"street\": \"Rua 7 de Setembro, 1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/people",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all people",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all people with query",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people?take=1&page=0&orderBy[name]=desc",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "orderBy[name]",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Joana de Souza\",\r\n    \"personType\": \"F\",\r\n    \"cpfCnpj\": \"77777777777\",\r\n    \"email\": \"joana@dominio.com\",\r\n    \"phone\": \"16988882536\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/people/4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people/4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get transactions by Person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people/1/transactions",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people",
+								"1",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get bets by Person",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people/2/bets",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people",
+								"2",
+								"bets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user@domain.com\",\r\n    \"password\": \"1234\",\r\n    \"personId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users with query",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/users?take=2&page=1&orderBy[id]=desc",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "orderBy[id]",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"newuser@domain.com\",\r\n    \"personId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/users/4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/users/4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user password",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"1234\",\r\n    \"newPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/users/2/password",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"users",
+								"2",
+								"password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Create transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Transferência\",\r\n    \"amount\": \"100.26\",\r\n    \"payer\": 2,\r\n    \"receiver\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/transactions/transfer",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"transactions",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create deposit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"personId\": 2,\r\n    \"amount\": \"2036.10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/transactions/deposit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"transactions",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create withdraw",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"personId\": 2,\r\n    \"amount\": \"2036.10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/transactions/deposit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"transactions",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teams",
+			"item": [
+				{
+					"name": "Create team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Camarões\",\r\n    \"teamImage\": \"https://pt.wikipedia.org/wiki/Camar%C3%B5es#/media/Ficheiro:Flag_of_Cameroon.svg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/teams",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all teams",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/teams",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all teams with query",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/people?take=2&page=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"people"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/teams/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"teams",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Índia\",\r\n    \"teamImage\": \"https://pt.wikipedia.org/wiki/Camar%C3%B5es#/media/Ficheiro:Flag_of_Cameroon.svg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/teams/9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"teams",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/teams/9",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"teams",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Matches",
+			"item": [
+				{
+					"name": "Create match",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Jogo 1\",\r\n  \"groupRound\": \"Torneio teste\",\r\n  \"matchStart\": \"2022-09-06T15:06:29.000Z\",\r\n  \"teams\": [\r\n    {\r\n      \"teamId\": 1,\r\n      \"teamResult\": 0,\r\n      \"odds\": \"1.82\",\r\n      \"teamOrder\": 0,\r\n      \"status\": \"created\",\r\n      \"winner\": false\r\n    },\r\n    {\r\n      \"teamId\": 6,\r\n      \"teamResult\": 0,\r\n      \"odds\": \"3\",\r\n      \"teamOrder\": 1,\r\n      \"status\": \"created\",\r\n      \"winner\": false\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/matches",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all matches",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/matches",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all matches with query",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/matches?take=2&page=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get match",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/matches/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update match",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Índia\",\r\n    \"teamImage\": \"https://pt.wikipedia.org/wiki/Camar%C3%B5es#/media/Ficheiro:Flag_of_Cameroon.svg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/matches/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete matches",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/matches/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bets Copy",
+			"item": [
+				{
+					"name": "Create bet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Jogo 1\",\r\n  \"groupRound\": \"Torneio teste\",\r\n  \"matchStart\": \"2022-09-06T15:06:29.000Z\",\r\n  \"teams\": [\r\n    {\r\n      \"teamId\": 1,\r\n      \"teamResult\": 0,\r\n      \"odds\": \"1.82\",\r\n      \"teamOrder\": 0,\r\n      \"status\": \"created\",\r\n      \"winner\": false\r\n    },\r\n    {\r\n      \"teamId\": 6,\r\n      \"teamResult\": 0,\r\n      \"odds\": \"3\",\r\n      \"teamOrder\": 1,\r\n      \"status\": \"created\",\r\n      \"winner\": false\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/v1/matches",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all bets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/bets",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"bets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all bets with query",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/matches?take=2&page=0",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"matches"
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get bets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/bets/1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"bets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete bets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBlcnNvbiI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjYyNjgwOTkwLCJleHAiOjE2NjM1NDQ5OTAsImlzcyI6IkdvbGFjb0FQSSJ9.K4aGjrWX9JbDR5FgZ7PdkeGensMu37Qvfs1P-ytfWRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/v1/bets/5",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"bets",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

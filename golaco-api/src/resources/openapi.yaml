@@ -1,0 +1,1762 @@
+openapi: 3.0.1
+info:
+  title: Golaço API
+  description: 'Golaço API, endpoints criados pela dupla [Luis Carlos Zancanela](https://git.gft.com/lsza) e [Vinicius Santos Silva](https://git.gft.com/vsso) para serem utilizados pelo Golaço APP'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Luis Zancanela
+    email: luis.zancanela@gft.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Repositório GFT GitLab
+  url: https://git.gft.com/extensao-starter-luiscarlos-vinicius/golaco
+servers:
+- url: http://localhost:3000/v1
+tags:
+- name: Authentication
+  description: 'Endpoint para autenticar e gerar o token de acesso'
+- name: People
+  description: 'Endpoints para Pessoas'
+- name: Transactions
+  description: 'Endpoints para Transações'
+- name: Matches
+  description: 'Endpoints para Partidas'
+- name: Teams
+  description: 'Endpoints para Times'
+- name: Bets
+  description: 'Endpoints para Apostas'
+- name: Users
+  description: 'Endpoints para Usuários'
+- name: HTTP Method GET
+  description: 'Endpoints do método HTTP GET'
+- name: HTTP Method POST
+  description: 'Endpoints do método HTTP POST'
+- name: HTTP Method PUT
+  description: 'Endpoints do método HTTP PUT'
+- name: HTTP Method PATCH
+  description: 'Endpoints do método HTTP PATCH'
+- name: HTTP Method DELETE
+  description: 'Endpoints do método HTTP DELETE'
+- name: Role ADMIN
+  description: 'Endpoints permitidos ao perfil ADMIN'
+- name: Role USER
+  description: 'Endpoints permitidos ao perfil USER'
+- name: Only Own User
+  description: 'Endpoints permitidos somente quando o usuário é o responsável pelo recurso específico'
+- name: Public
+  description: 'Endpoints permitidos para acesso público (todos)'
+paths:
+  /auth:
+    post:
+      tags:
+      - Authentication
+      - HTTP Method POST
+      - Role ADMIN
+      - Role USER
+      - Public
+      summary: 'Realizar autenticação e gerar token de autorização'
+      operationId: requestToken
+      requestBody:
+        description: 'Dados para autenticar no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestLogin'
+        required: true
+      responses:
+        200:
+          description: Token gerado com sucesso
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_token:
+                    type: string
+                    description: 'Token de autorização do usuário'
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+        400:
+          description: 'BadRequest - Conteúdo inválido'
+          content: {}
+        401:
+          description: Unauthorized - Usuário ou senha inválido(s)
+          content: {}
+
+  /people:
+    get:
+      tags:
+      - People
+      - HTTP Method GET
+      - Role ADMIN
+      summary: 'Pesquisa todas as pessoas cadastradas no sistema'
+      description: 'Pesquisar todas as pessoas e retorna com paginação'
+      operationId: findAllPeople
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+          required: false
+          description: 'Quantidade de itens por página.'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: 'Número da página.'
+      responses:
+        200:
+          description: 'Operação realizada com sucesso.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponsePerson'
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+      - People
+      - HTTP Method POST
+      - Role ADMIN
+      summary: 'Adiciona nova pessoa'
+      operationId: addPerson
+      requestBody:
+        description: 'Dados de pessoa para adicionar ao sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPerson'
+        required: true
+      responses:
+        201:
+          description: Created - Nova pessoa salva com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePerson'
+        400:
+          description: 'BadRequest - Conteúdo inválido'
+          content: {}
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+        409:
+          description: 'Conflict - Algum dado enviado está inválido'
+          content: {}
+      security:
+        - bearerAuth: []
+
+  /people/{id}:
+    get:
+      tags:
+      - People
+      - HTTP Method GET
+      - Role ADMIN
+      - Only Own User
+      summary: 'Pequisa pessoa por id'
+      operationId: getPersonById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da pessoa'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Pessoa encontrada e retornada com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePerson'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []    
+    put:
+      tags:
+      - People
+      - HTTP Method PUT
+      - Role ADMIN
+      summary: 'Atualiza pessoa por id'
+      operationId: updatePersonById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da pessoa'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: 'Atributos do objeto pessoa para ser atualizado no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPerson'
+        required: true
+      responses:
+        200:
+          description: 'Pessoa atualizada com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePerson'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+      - People
+      - HTTP Method DELETE
+      - Role ADMIN
+      summary: 'Excluir pessoa por id'
+      operationId: deletePersonById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da pessoa'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204: 
+          description: 'Exclusão realizada com sucesso'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+  
+  /people/{id}/transactions:
+    get:
+      tags:
+      - People
+      - HTTP Method GET
+      - Role ADMIN
+      - Only Own User
+      summary: 'Pesquisa todas transações da pessoa especificada'
+      description: 'Pesquisar todas as transações da pessoa e retorna com paginação'
+      operationId: getTransactionsFromPeopleById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da pessoa'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Pessoa encontrada e retornada com as transações com sucesso'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponsePerson'
+                  - type: object
+                    properties:
+                      incomingTransactions:
+                        $ref: '#/components/schemas/PageResponseTransaction'
+                      outgoingTransactions:
+                        $ref: '#/components/schemas/PageResponseTransaction'
+                
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+
+  /people/{id}/bets:
+    get:
+      tags:
+      - People
+      - HTTP Method GET
+      - Role ADMIN
+      - Only Own User
+      summary: 'Pesquisa todas as apostas da pessoa especificada'
+      description: 'Pesquisar todas as apostas da pessoa e retorna com paginação'
+      operationId: getBetsFromPeopleById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da pessoa'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Pessoa encontrada e retornada com as apostas com sucesso'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponsePerson'
+                  - type: object
+                    properties:
+                      incomingTransactions:
+                        $ref: '#/components/schemas/PageResponseBet'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+        
+  /transactions/deposit:
+    post:
+      tags:
+      - Transactions
+      - HTTP Method POST
+      - Only Own User
+      summary: 'Transação de depósito'
+      description: 'Realizar transação de depósito de recurso'
+      operationId: depositTransaction
+      requestBody:
+        description: 'Pessoa e valor para a operação'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTransaction'
+      responses:
+        201: 
+          description: 'Transação realizada com sucesso'
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ResponseTransaction'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+        
+  /transactions/withdraw:
+    post:
+      tags:
+      - Transactions
+      - HTTP Method POST
+      - Only Own User
+      summary: 'Transação de retirada'
+      description: 'Realizar transação de retirada de recurso'
+      operationId: withdrawTransaction
+      requestBody:
+        description: 'Pessoa e valor para a operação'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTransaction'
+      responses:
+        201: 
+          description: 'Transação realizada com sucesso'
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ResponseTransaction'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+        
+  /transactions/transfer:
+    post:
+      tags:
+      - Transactions
+      - HTTP Method POST
+      - Only Own User
+      summary: 'Transação de retirada'
+      description: 'Realizar transação de retirada de recurso'
+      operationId: transferTransaction
+      requestBody:
+        description: 'Pessoa e valor para a operação'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTransfer'
+      responses:
+        201: 
+          description: 'Transação realizada com sucesso'
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ResponseTransaction'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+        
+  /teams:
+    get:
+      tags:
+      - Teams
+      - HTTP Method GET
+      - Role ADMIN
+      - Role USER
+      summary: 'Pesquisa todos os times cadastrados no sistema'
+      description: 'Pesquisar todos os times e retorna com paginação'
+      operationId: findAllTeams
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+          required: false
+          description: 'Quantidade de itens por página.'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: 'Número da página.'
+      responses:
+        200:
+          description: 'Operação realizada com sucesso.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseTeam'
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+      - Teams
+      - HTTP Method POST
+      - Role ADMIN
+      summary: 'Adiciona novo time'
+      operationId: addTeam
+      requestBody:
+        description: 'Dados de conta para adicionar ao sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTeam'
+        required: true
+      responses:
+        201:
+          description: 'Created - Novo time salvo com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTeam'
+        400:
+          description: 'BadRequest - Conteúdo inválido'
+          content: {}
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+        409:
+          description: 'Conflict - Algum dado enviado está inválido'
+          content: {}
+      security:
+        - bearerAuth: []
+      
+  /teams/{id}:
+    get:
+      tags:
+      - Teams
+      - HTTP Method GET
+      - Role ADMIN
+      - Role USER
+      summary: 'Pesquisa time por id'
+      operationId: getTeamById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do time'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Time encontrado e retornado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTeam'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []    
+    put:
+      tags:
+      - Teams
+      - HTTP Method PUT
+      - Role ADMIN
+      summary: 'Atualiza time por id'
+      operationId: updateTeamById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do time'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: 'Atributos do time para ser atualizado no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTeam'
+        required: true
+      responses:
+        200:
+          description: 'Time atualizado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTeam'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+      - Teams
+      - HTTP Method DELETE
+      - Role ADMIN
+      summary: 'Excluir conta por id'
+      operationId: deleteTeamById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do time'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204: 
+          description: 'Exclusão realizada com sucesso'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+
+  /matches:
+    get:
+      tags:
+      - Matches
+      - HTTP Method GET
+      - Role ADMIN
+      - Role USER
+      summary: 'Pesquisa todas as partidas'
+      description: 'Pesquisar todas as partidas e retorna com paginação'
+      operationId: findAllMatches
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+          required: false
+          description: 'Quantidade de itens por página.'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: 'Número da página.'
+      responses:
+        200:
+          description: 'Operação realizada com sucesso.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseMatch'
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+      - Matches
+      - HTTP Method POST
+      - Role ADMIN
+      summary: 'Adiciona nova partida'
+      operationId: addMatch
+      requestBody:
+        description: 'Dados da partida para adicionar ao sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestMatch'
+        required: true
+      responses:
+        201:
+          description: 'Created - Nova partida salva com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMatch'
+        400:
+          description: 'BadRequest - Conteúdo inválido'
+          content: {}
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+        409:
+          description: 'Conflict - Algum dado enviado está inválido'
+          content: {}
+      security:
+        - bearerAuth: []
+      
+  /matches/{id}:
+    get:
+      tags:
+      - Matches
+      - HTTP Method GET
+      - Role ADMIN
+      - Role USER
+      summary: 'Pesquisa partida por id'
+      operationId: getMatchById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da partida'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Partida encontrada e retornada com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMatch'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []    
+    put:
+      tags:
+      - Matches
+      - HTTP Method PUT
+      - Role ADMIN
+      summary: 'Atualiza partida por id'
+      operationId: updateMatchById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do time'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: 'Atributos da partida para ser atualizada no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestMatch'
+        required: true
+      responses:
+        200:
+          description: 'Partida atualizado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMatch'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+      - Matches
+      - HTTP Method DELETE
+      - Role ADMIN
+      summary: 'Excluir partida por id'
+      operationId: deleteMatchById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da partida'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204: 
+          description: 'Exclusão realizada com sucesso'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+
+  /bets:
+    get:
+      tags:
+      - Bets
+      - HTTP Method GET
+      - Role ADMIN
+      summary: 'Pesquisa todas as apostas cadastradas no sistema'
+      description: 'Pesquisar todas as pessoas e retorna com paginação'
+      operationId: findAllBets
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+          required: false
+          description: 'Quantidade de itens por página.'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: 'Número da página.'
+      responses:
+        200:
+          description: 'Operação realizada com sucesso.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseBet'
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+      - Bets
+      - HTTP Method POST
+      - Role ADMIN
+      - Only Own User
+      summary: 'Adiciona nova aposta'
+      operationId: addBet
+      requestBody:
+        description: 'Dados de aposta para adicionar ao sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBet'
+        required: true
+      responses:
+        201:
+          description: 'Created - Nova aposta salva com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBet'
+        400:
+          description: 'BadRequest - Conteúdo inválido'
+          content: {}
+        401:
+          description: 'Unauthorized - Não está autenticado'
+          content: {}
+        403:
+          description: 'Forbidden - Acesso não autorizado'
+          content: {}
+        409:
+          description: 'Conflict - Algum dado enviado está inválido'
+          content: {}
+      security:
+        - bearerAuth: []
+
+  /bets/{id}:
+    get:
+      tags:
+      - Bets
+      - HTTP Method GET
+      - Role ADMIN
+      - Only Own User
+      summary: 'Pequisa aposta por id'
+      operationId: getBetById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da aposta'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Aposta encontrada e retornada com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBet'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []    
+    delete:
+      tags:
+      - Bets
+      - HTTP Method DELETE
+      - Role ADMIN
+      summary: 'Excluir aposta por id'
+      operationId: deleteBetById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id da aposta'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204: 
+          description: 'Exclusão realizada com sucesso'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+
+  /users:
+    get:
+      tags:
+      - Users
+      - HTTP Method GET
+      - Role ADMIN
+      summary: 'Pesquisa todos os usuários'
+      description: 'Pesquisar todos os usuários, retorno com paginação'
+      operationId: findAllUsers
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+          required: false
+          description: 'Quantidade de itens por página.'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: 'Número da página.'
+      responses:
+        200:
+          description: 'Operação realizada com sucesso.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseUser'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+      - Users
+      - HTTP Method POST
+      - Role ADMIN
+      summary: Adiciona novo usuário
+      operationId: addUser
+      requestBody:
+        description: 'Objeto com dados de usuário para adicionar ao sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUser'
+        required: true
+      responses:
+        201:
+          description: 'Created - Novo usuário salvo com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUser'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      - HTTP Method GET
+      - Role ADMIN
+      - Only Own User
+      summary: 'Pequisa usuário por id'
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do usuário'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200: 
+          description: 'Usuário encontrado e retornado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUser'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []    
+    put:
+      tags:
+      - Users
+      - HTTP Method PUT
+      - Role ADMIN
+      summary: 'Atualiza usuário por id'
+      operationId: updateUserById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do usuário'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: 'Atributos do objeto usuário para ser atualizado no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUser'
+        required: true
+      responses:
+        200:
+          description: 'Usuário atualizado com sucesso'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUser'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+      - Users
+      - HTTP Method DELETE
+      - Role ADMIN
+      summary: 'Excluir usuário por id'
+      operationId: deleteUserById
+      parameters:
+      - name: id
+        in: path
+        description: 'Id do usuário'
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204: 
+          description: 'Exclusão realizada com sucesso'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+           $ref: '#/components/responses/NotFound'
+      security:
+        - bearerAuth: []
+  /users/{id}/password:
+    patch:
+      tags:
+      - Users
+      - HTTP Method PATCH
+      - Only Own User
+      summary: 'Atualiza senha do usuário'
+      operationId: updateUserPasswordById
+      parameters:
+      - name: id
+        in: path
+        description: Id do usuário
+        required: true
+        example: 1
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: 'Senha antiga e nova para atualizar o atributo do usuário no sistema'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUserPassword'
+        required: true
+      responses:
+        204:
+          description: 'Senha do usuário alterada com sucesso'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+           $ref: '#/components/responses/Conflict'
+      security:
+        - bearerAuth: []
+        
+components:
+  responses:
+    BadRequest:
+      description: 'BadRequest - Conteúdo inválido'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: 'Unauthorized - Não está autenticado'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: 'Forbidden - Acesso não autorizado'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: 'O recurso especificado não foi encontrado'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: 'Conflict - Algum dado enviado está inválido'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: string
+        timestamp:
+          type: string
+        message:
+          type: string
+    
+    #Objects
+    RequestPerson:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/PersonName'
+        personType:
+          $ref: '#/components/schemas/PersonType'
+        cpfCnpj:
+          $ref: '#/components/schemas/CpfCnpj'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone: 
+          $ref: '#/components/schemas/Phone'
+        street:
+          $ref: '#/components/schemas/AddressStreet'
+        city:
+          $ref: '#/components/schemas/AddressCity'
+        state: 
+          $ref: '#/components/schemas/AddressState'
+        postalCode:
+          $ref: '#/components/schemas/AddressPostalCode'
+        country:
+          $ref: '#/components/schemas/AddressCountry'
+      required:
+        - name
+        - type
+        - cpfCnpj
+        - email
+        - phone
+    ResponsePerson:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Id da pessoa'
+          example: '1'
+        name:
+          $ref: '#/components/schemas/PersonName'
+        personType:
+          $ref: '#/components/schemas/PersonType'
+        cpfCnpj:
+          $ref: '#/components/schemas/CpfCnpj'
+        email:
+          $ref: '#/components/schemas/Email'
+        phone: 
+          $ref: '#/components/schemas/Phone'
+        street:
+          $ref: '#/components/schemas/AddressStreet'
+        city:
+          $ref: '#/components/schemas/AddressCity'
+        state: 
+          $ref: '#/components/schemas/AddressState'
+        postalCode:
+          $ref: '#/components/schemas/AddressPostalCode'
+        country:
+          $ref: '#/components/schemas/AddressCountry'
+        balance:
+          $ref: '#/components/schemas/Balance'
+        balanceAt: 
+          $ref: '#/components/schemas/BalanceAt'
+    PageResponsePerson:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponsePerson'
+            
+    RequestLogin:
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/LoginUsername'
+        password:
+          $ref: '#/components/schemas/LoginPassword'
+      required:
+        - username
+        - password
+    RequestUser:
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        password:
+          $ref: '#/components/schemas/Password'
+        role:
+          $ref: '#/components/schemas/Role'
+        personId:
+          type: integer
+          format: int64
+          description: 'Id da pessoa vinculada'
+          example: 1
+      required:
+        - username
+        - password
+    RequestUserPassword:
+      type: object
+      properties:
+        oldPassword:
+          $ref: '#/components/schemas/Password'
+        newPassword:
+          $ref: '#/components/schemas/Password'
+      required:
+        - password
+    ResponseUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id do usuário
+          format: int64
+          example: 1
+        username:
+          $ref: '#/components/schemas/Username'
+        roles:
+          $ref: '#/components/schemas/Role'
+        personId:
+          $ref: '#/components/schemas/PersonId'
+    PageResponseUser:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponseUser'
+            
+    RequestTransaction:
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Amount'
+        personId:
+          type: integer
+          format: int64
+          description: 'Id da pessoa que está fazendo o depósito ou retirada'
+          example: 1
+    RequestTransfer:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Nome da transação'
+          example: 'Aposta Realizada'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        payer:
+          type: integer
+          format: int64
+          description: 'Id da pessoa que está pagando'
+          example: 1
+        receiver:
+          type: integer
+          format: int64
+          description: 'Id da pessoa que está recebendo'
+          example: 2
+    ResponseTransaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Id da transação'
+          example: 1
+        name:
+          type: string
+          description: 'Nome da transação'
+          example: 'Aposta Realizada'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        dateTimeAt:
+          type: string
+          description: 'Data e hora da transação'
+          example: '2022-09-06T15:06:29.000Z'  
+        payer:
+          type: integer
+          format: int64
+          description: 'Id da conta que paga'
+          example: 1
+        receiver:
+          type: integer
+          format: int64
+          description: 'Id da conta que recebe'
+          example: 2
+        betId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 'Id da aposta vinculada à transação'
+          example: 1
+        status:
+          type: string
+          description: 'Status da transação'
+          example: 'done'
+          enum: 
+            ['done', 'closed']
+    PageResponseTransaction:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponseTransaction'
+    
+    RequestTeam:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Nome do Time'
+          example: 'Brasil'
+        teamImage:
+          type: string
+          description: 'URL da imagem do time'
+          example: 'http://dominio.com/folder/image.jpg'
+      required:
+        - name
+    ResponseTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Id do time'
+          example: '1'
+        name:
+          type: string
+          description: 'Nome do Time'
+          example: 'Brasil'
+        teamImage:
+          type: string
+          description: 'URL da imagem do time'
+          example: 'http://dominio.com/folder/image.jpg'
+    PageResponseTeam:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponseTeam'
+    
+    RequestMatch:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Título da partida'
+          example: 'Jogo 1'
+        groupRound:
+          type: string
+          description: 'Rodada que a partida pertence'
+          example: 'Copa do Mundo Qatar 2022 - Oitavas de Final'
+        matchStart:
+          type: string
+          description: 'Data e hora de início da partida'
+          example: '2022-09-06T15:06:29.000Z'
+        matchEnd:
+          type: string
+          description: 'Data e hora do término da partida'
+          example: '2022-09-06T15:06:29.000Z'
+        status:
+          type: string
+          description: 'Status da partida'
+          example: 'created'
+          enum: 
+            ['created', 'closed']
+        teams:
+          type: array
+          items: 
+            $ref: '#/components/schemas/RequestMatchTeam'
+      required:
+        - name
+        - round
+        - start
+    ResponseMatch:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Id da partida'
+          example: '1'
+        name:
+          type: string
+          description: 'Título da partida'
+          example: 'Jogo 1'
+        groupRound:
+          type: string
+          description: 'Rodada que a partida pertence'
+          example: 'Copa do Mundo Qatar 2022 - Oitavas de Final'
+        matchStart:
+          type: string
+          description: 'Data e hora de início da partida'
+          example: '2022-09-06T15:06:29.000Z'
+        matchEnd:
+          type: string
+          nullable: true
+          description: 'Data e hora do término da partida'
+          example: '2022-09-06T15:06:29.000Z'
+        status:
+          type: string
+          description: 'Status da partida'
+          example: 'created'
+          enum: 
+            ['created', 'closed']
+        teams:
+          type: array
+          items: 
+            $ref: '#/components/schemas/RequestMatchTeam'
+    PageResponseMatch:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponseMatch'
+    RequestMatchTeam:
+      type: object
+      properties:
+        teamId:
+          type: number
+          format: int64
+          description: 'Id do time'
+          example: 1
+        teamResult:
+          type: number
+          format: int32
+          description: 'Resultado do time na partida'
+          example: 0
+        odds:
+          type: string
+          description: 'Multiplicador da aposta em decimais com até 2 casas'
+          example: '1.82'
+        teamOrder:
+          type: number
+          format: int32
+          description: 'Ordem do time na partida'
+          example: 0
+          enum:
+           [0, 1, -1]
+        status:
+          type: string
+          description: 'Status da partida'
+          example: 'created'
+          enum: 
+            ['created', 'closed']
+        winner:
+          type: boolean
+          description: 'Time vencedor da partida'
+          example: false
+      required:
+        - teamId
+        - odds
+        - order
+
+    RequestBet:
+      type: object
+      properties:
+        personId:
+          type: number
+          format: int64
+          description: 'Id do apostador (pessoa)'
+          example: 1
+        matchId:
+          type: number
+          format: int64
+          description: 'Id da partida'
+          example: 1
+        teamId:
+          type: number
+          format: int64
+          description: 'Id do time'
+          example: 1
+        amount:
+          $ref: '#/components/schemas/Amount'
+        status:
+          type: string
+          description: 'Status da partida'
+          example: 'waiting'
+          enum: 
+            ['done', 'lose', 'win']
+      required:
+        - personId
+        - matchId
+        - teamId
+        - amount
+    ResponseBet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 'Id da aposta'
+          example: '1'
+        personId:
+          type: number
+          format: int64
+          description: 'Id do apostador (pessoa)'
+          example: 1
+        matchId:
+          type: number
+          format: int64
+          description: 'Id da partida'
+          example: 1
+        teamId:
+          type: number
+          format: int64
+          description: 'Id do time'
+          example: 1
+        amount:
+          $ref: '#/components/schemas/Amount'
+        status:
+          type: string
+          description: 'Status da partida'
+          example: 'waiting'
+          enum: 
+            ['done', 'lose', 'win']
+    PageResponseBet:
+      type: object
+      properties:
+        pageInfo:
+          $ref: '#/components/schemas/PageInfo'
+        data:
+          type: array
+          items: 
+            $ref: '#/components/schemas/ResponseBet'
+
+    PageInfo:
+      type: object
+      properties:
+        itemsPerPage:
+          type: integer
+          format: int32
+          default: 100
+        currentPage:
+          type: integer
+          format: int32
+          default: 0
+        currentPageAmountItems:
+          type: integer
+          format: int32
+          default: 50
+        lastPage:
+          type: integer
+          format: int32
+          default: 0
+        totalItems:
+          type: integer
+          format: int32
+          default: 50
+    
+    #Fields    
+    Role:
+      type: string
+      nullable: true
+      description: 'Perfil de Usuário'
+      example: 'ADMIN'
+      enum: 
+        ['ADMIN', 'USER']
+    PersonName:
+      type: string
+      description: 'Nome da pessoa'
+      example: 'Josefina Oliveira'
+    Email:
+      type: string
+      description: 'Email da pessoa'
+      example: 'josefina@dominio.com'
+    Phone:
+      type: string
+      description: 'Número do telefone'
+      example: '16 988887777'
+    PersonType:
+      type: string
+      description: 'Tipo de Pessoa'
+      enum: ['F', 'J']
+      example: 'F'
+    CpfCnpj:
+      type: string
+      description: 'CPF se Pessoa Física ou CNPJ se Pessoa Jurídica'
+      example: '65598659085'
+    AddressStreet:
+      type: string
+      description: 'Nome da rua, número e complemento'
+      example: 'Rua Dois, 123, Apartamento 1'
+    AddressCity:
+      type: string
+      description: 'Cidade'
+      example: 'São Paulo'
+    AddressState:
+      type: string
+      nullable: true
+      description: 'UF/Estado (EX é Usado para quando país é diferente de Brasil)'
+      example: 'SP'
+      enum: 
+        ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO', 'EX']
+    AddressPostalCode:
+      type: string
+      description: 'CEP'
+      example: '11222333'
+    AddressCountry:
+      type: string
+      description: 'País'
+      example: 'Brasil'
+    LoginUsername:
+      type: string
+      description: 'Nome do usuário para logar no sistema'
+      example: 'golaco@golaco.bet'
+    LoginPassword:
+      type: string
+      description: 'Senha do usuário para logar no sistema'
+      example: 1234
+    Username:
+      type: string
+      description: 'Nome do usuário'
+      example: 'usuario'
+    Password:
+      type: string
+      description: 'Senha do usuário'
+      example: 123456
+    PersonId:
+      type: integer
+      format: int64
+      description: 'Id da pessoa vinculada'
+      example: 1
+    Balance:
+      type: number
+      format: double
+      description: 'Saldo da conta'
+      multipleOf: 0.01
+      example: 1000.52
+    BalanceAt:
+      type: string
+      description: 'Data do saldo'
+      example: '2022-09-06T15:06:29.000Z'  
+    Amount:  
+      type: string
+      description: 'Quantia'
+      example: '100.67'
+    
+      
+  #Security            
+  securitySchemes:
+    bearerAuth:         
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

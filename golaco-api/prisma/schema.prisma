@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model address {
+  id           Int     @id @default(autoincrement())
+  street       String? @db.VarChar(255)
+  city         String? @db.VarChar(255)
+  stateFU      String? @db.VarChar(2)
+  postalCode   String? @db.VarChar(8)
+  country      String? @db.VarChar(255)
+  personId     Int
+  lastUsername String  @db.VarChar(255)
+  person       person  @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Address_Person")
+
+  @@index([personId], map: "fk_Address_Person_idx")
+}
+
+model address_audit {
+  id              Int
+  street          String   @default("") @db.VarChar(255)
+  city            String?  @db.VarChar(255)
+  stateFU         String?  @db.VarChar(2)
+  postalCode      String?  @db.VarChar(8)
+  country         String?  @db.VarChar(255)
+  personId        Int
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([id, street, personId, audit_timestamp, audit_operation, audit_username])
+}
+
+model bet {
+  id           Int           @id @default(autoincrement())
+  dateTimeAt   DateTime      @default(now()) @db.Timestamp(0)
+  amount       Decimal       @db.Decimal(15, 2)
+  status       String?       @db.VarChar(10)
+  personId     Int
+  matchId      Int
+  teamId       Int
+  lastUsername String        @db.VarChar(255)
+  match        match         @relation(fields: [matchId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Bet_Match1")
+  person       person        @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Bet_Person1")
+  team         team          @relation(fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Bet_Team1")
+  transaction  transaction[]
+
+  @@unique([personId, matchId], map: "unique_Person_Match")
+  @@index([matchId], map: "fk_Bet_Match1_idx")
+  @@index([personId], map: "fk_Bet_Person1_idx")
+  @@index([teamId], map: "fk_Bet_Team1_idx")
+}
+
+model bet_audit {
+  id              Int
+  dateTimeAt      DateTime @db.Timestamp(0)
+  amount          Decimal  @db.Decimal(15, 2)
+  status          String?  @db.VarChar(10)
+  personId        Int
+  matchId         Int
+  teamId          Int
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([id, personId, matchId, teamId, audit_timestamp, audit_operation, audit_username])
+}
+
+model match {
+  id           Int           @id @default(autoincrement())
+  name         String?       @db.VarChar(255)
+  groupRound   String?       @db.VarChar(100)
+  matchStart   DateTime?     @db.Timestamp(0)
+  matchEnd     DateTime?     @db.Timestamp(0)
+  status       String?       @db.VarChar(10)
+  lastUsername String        @db.VarChar(255)
+  bet          bet[]
+  matchsteams  matchsteams[]
+}
+
+model match_audit {
+  id              Int
+  name            String?   @db.VarChar(255)
+  groupRound      String?   @db.VarChar(100)
+  matchStart      DateTime? @db.Timestamp(0)
+  matchEnd        DateTime? @db.Timestamp(0)
+  status          String?   @db.VarChar(10)
+  audit_timestamp DateTime  @default(now()) @db.Timestamp(0)
+  audit_operation String    @db.VarChar(1)
+  audit_username  String    @db.VarChar(255)
+
+  @@id([id, audit_timestamp, audit_operation, audit_username])
+}
+
+model matchsteams {
+  matchId      Int
+  teamId       Int
+  teamResult   Int?
+  teamOrder    Int?     @db.TinyInt
+  odds         Decimal? @db.Decimal(15, 2)
+  winner       Int?     @db.TinyInt
+  lastUsername String   @db.VarChar(255)
+  match        match    @relation(fields: [matchId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_MatchsTeams_Match1")
+  team         team     @relation(fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_MatchsTeams_Team1")
+
+  @@id([matchId, teamId])
+  @@index([matchId], map: "fk_MatchsTeams_Match1_idx")
+  @@index([teamId], map: "fk_MatchsTeams_Team1_idx")
+}
+
+model matchsteams_audit {
+  matchId         Int
+  teamId          Int
+  teamResult      Int?
+  teamOrder       Int?     @db.TinyInt
+  odds            Decimal  @db.Decimal(15, 2)
+  winner          Int?     @db.TinyInt
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([matchId, teamId, odds, audit_timestamp, audit_operation, audit_username])
+}
+
+model person {
+  id                                       Int           @id @default(autoincrement())
+  name                                     String        @db.VarChar(255)
+  personType                               String        @db.VarChar(1)
+  cpfCnpj                                  String        @db.VarChar(14)
+  email                                    String?       @db.VarChar(255)
+  phone                                    String?       @db.VarChar(255)
+  balance                                  Decimal?      @db.Decimal(15, 2)
+  balanceAt                                DateTime?     @db.Timestamp(0)
+  lastUsername                             String        @db.VarChar(255)
+  address                                  address[]
+  bet                                      bet[]
+  transaction_personTotransaction_receiver transaction[] @relation("personTotransaction_receiver")
+  transaction_personTotransaction_payer    transaction[] @relation("personTotransaction_payer")
+  user                                     user[]
+}
+
+model person_audit {
+  id              Int
+  name            String?   @db.VarChar(255)
+  PersonType      String?   @db.VarChar(1)
+  cpfCnpj         String?   @db.VarChar(14)
+  email           String?   @db.VarChar(255)
+  phone           String?   @db.VarChar(255)
+  balance         Decimal   @default(0.00) @db.Decimal(15, 2)
+  balanceAt       DateTime? @db.Timestamp(0)
+  audit_timestamp DateTime  @default(now()) @db.Timestamp(0)
+  audit_operation String    @db.VarChar(1)
+  audit_username  String    @db.VarChar(255)
+
+  @@id([id, balance, audit_timestamp, audit_operation, audit_username])
+}
+
+model team {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  teamImage    String?       @db.VarChar(255)
+  lastUsername String        @db.VarChar(255)
+  bet          bet[]
+  matchsteams  matchsteams[]
+}
+
+model team_audit {
+  id              Int
+  name            String   @db.VarChar(255)
+  teamImage       String?  @db.VarChar(255)
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([id, name, audit_timestamp, audit_operation, audit_username])
+}
+
+model transaction {
+  id                                  Int      @id @default(autoincrement())
+  name                                String   @db.VarChar(255)
+  amount                              Decimal  @db.Decimal(15, 2)
+  dateTimeAt                          DateTime @default(now()) @db.Timestamp(0)
+  status                              String   @db.VarChar(10)
+  receiver                            Int?
+  payer                               Int?
+  betId                               Int?
+  lastUsername                        String   @db.VarChar(255)
+  bet                                 bet?     @relation(fields: [betId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Transaction_Bet")
+  person_personTotransaction_receiver person?  @relation("personTotransaction_receiver", fields: [receiver], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Transaction_Person1")
+  person_personTotransaction_payer    person?  @relation("personTotransaction_payer", fields: [payer], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Transaction_Person2")
+
+  @@index([betId], map: "fk_Transaction_Bet1_idx")
+  @@index([receiver], map: "fk_Transaction_Person1_idx")
+  @@index([payer], map: "fk_Transaction_Person2_idx")
+}
+
+model transaction_audit {
+  id              Int
+  name            String   @db.VarChar(255)
+  amount          Decimal  @db.Decimal(15, 2)
+  dateTimeAt      DateTime @db.Timestamp(0)
+  status          String?  @db.VarChar(10)
+  receiver        Int?
+  payer           Int?
+  betId           Int?
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([id, amount, audit_timestamp, dateTimeAt, audit_operation, audit_username])
+}
+
+model user {
+  id           Int     @id @default(autoincrement())
+  username     String  @unique(map: "unique_Username") @db.VarChar(255)
+  password     String  @db.VarChar(255)
+  role         String? @db.VarChar(5)
+  personId     Int
+  lastUsername String  @db.VarChar(255)
+  person       person  @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_User_Person1")
+
+  @@index([personId], map: "fk_User_Person1_idx")
+}
+
+model user_audit {
+  id              Int
+  username        String   @db.VarChar(255)
+  password        String   @db.VarChar(255)
+  role            String?  @db.VarChar(5)
+  personId        Int?
+  audit_timestamp DateTime @default(now()) @db.Timestamp(0)
+  audit_operation String   @db.VarChar(1)
+  audit_username  String   @db.VarChar(255)
+
+  @@id([id, username, audit_timestamp, audit_operation, audit_username])
+}

@@ -1,0 +1,19 @@
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+.main-container{
+  padding-top: 100px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 100px;
+  margin-right: auto;
+  margin-left: auto;
+  overflow: hidden;
+}
+
+.footer{
+  height: 50px;
+  text-align: center;
+}
+
+.menu{
+  margin-bottom: auto;
+}
